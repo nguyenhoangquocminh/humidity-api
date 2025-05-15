@@ -4,11 +4,7 @@ import joblib
 
 app = Flask(__name__)
 
-# Load model
 model = joblib.load("humidity_rf_model.pkl")
-
-# Load encoder nếu có
-# encoder = joblib.load("encoder.pkl")  # Nếu bạn có file encoder riêng
 
 def get_part_of_day(hour):
     if 0 <= hour < 6:
@@ -31,7 +27,6 @@ def predict():
         month = timestamp.month
         part_of_day = get_part_of_day(hour)
 
-        # One-hot encoding thủ công
         part_cols = ["part_of_day_afternoon", "part_of_day_evening", "part_of_day_morning", "part_of_day_night"]
         encoded = {col: 0 for col in part_cols}
         encoded[f"part_of_day_{part_of_day}"] = 1
@@ -54,3 +49,6 @@ def predict():
 @app.route("/", methods=["GET"])
 def home():
     return "Humidity Prediction API is running."
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
